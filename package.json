@@ -1,0 +1,35 @@
+{
+  "name": "quill-template",
+  "description": "Reusable templating and environment logic for applying configuration to system.json packages.",
+  "version": "0.0.0",
+  "author": "Nodejitsu Inc. <info@nodejitsu.com>",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/nodejitsu/quill-template.git"
+  },
+  "keywords": [
+    "quill",
+    "system.json",
+    "templating",
+    "configuration"
+  ],
+  "dependencies": {
+    "rget": "1.1.x",
+    "utile": "0.1.x"
+  },
+  "devDependencies": {
+    "conservatory-api": "0.5.x",
+    "nock": "0.13.x",
+    "vows": "0.7.x"
+  },
+  "publishConfig": {
+    "registry": "http://reg.njitsu.net:5984"
+  },
+  "main": "./lib/index",
+  "scripts": {
+    "test": "vows test/*-test.js --spec"
+  },
+  "engines": {
+    "node": "0.8.x | 0.6.x"
+  }
+}
