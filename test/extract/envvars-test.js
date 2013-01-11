@@ -28,6 +28,7 @@ function shouldHaveKeys(text, expected) {
       assert.isString(key.text);
       assert.equal(key.key, expected[i].key);
       assert.equal(key.line, expected[i].line);
+      assert.equal(key.raw, expected[i].raw);
     });
   }
 }
@@ -45,13 +46,13 @@ vows.describe('quill-template/extract/envvars').addBatch({
         '$q_foo = $quill_bar'
       ],
       [
-        { line: 1, key: 'foo' },
-        { line: 2, key: 'bar.0' },
-        { line: 4, key: 'baz.nested.x' },
-        { line: 5, key: 'foo.bar' },
-        { line: 6, key: 'foo.bar-baz' },
-        { line: 7, key: 'foo' },
-        { line: 7, key: 'bar' }
+        { line: 1, key: 'foo',          raw: 'q_foo' },
+        { line: 2, key: 'bar.0',        raw: 'quill_bar_0' },
+        { line: 4, key: 'baz.nested.x', raw: 'q_baz_nested_x' },
+        { line: 5, key: 'foo.bar',      raw: 'quill_foo_bar' },
+        { line: 6, key: 'foo.bar-baz',  raw: 'q_foo_bar-baz' },
+        { line: 7, key: 'foo',          raw: 'q_foo' },
+        { line: 7, key: 'bar',          raw: 'quill_bar' }
       ]
     ),
     "the file() method": {
@@ -62,9 +63,9 @@ vows.describe('quill-template/extract/envvars').addBatch({
         assert.isNull(err);
         assert.isArray(values);
         assert.deepEqual(values, [
-          { line: 1, text: '$quill_foo', key: 'foo' },
-          { line: 2, text: '$q_bar', key: 'bar' },
-          { line: 3, text: '$q_baz', key: 'baz' }
+          { line: 1, text: '$quill_foo', key: 'foo', raw: 'quill_foo' },
+          { line: 2, text: '$q_bar', key: 'bar', raw: 'q_bar' },
+          { line: 3, text: '$q_baz', key: 'baz', raw: 'q_baz' }
         ]);
       }
     },
