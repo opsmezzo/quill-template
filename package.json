@@ -27,7 +27,7 @@
   },
   "main": "./lib/index",
   "scripts": {
-    "test": "vows test/*-test.js --spec"
+    "test": "vows test/*-test.js test/**/*-test.js --spec"
   },
   "engines": {
     "node": "0.8.x | 0.6.x"
