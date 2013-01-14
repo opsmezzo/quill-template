@@ -15,6 +15,8 @@ vows.describe('quill-template/config').addBatch({
   'When using `quill.composer.config`': {
     'the `getEnv()` method': {
       topic: function () {
+        var that = this;
+
         nock('http://api.testquill.com')
           .get('/config/first')
           .reply(200, {
@@ -43,10 +45,17 @@ vows.describe('quill-template/config').addBatch({
           after: {
             bar: 'lol'
           }
-        }, this.callback);
+        }, this.callback)
+          .on('fetch', function (remote) {
+            that.remotes = that.remotes || [];
+            that.remotes.push(remote);
+          });
       },
       'should return correct config': function (err, config) {
         assert(!err);
+        assert.isArray(this.remotes);
+        assert.lengthOf(this.remotes, 1);
+        assert.include(this.remotes, 'first');
 
         var expected = {
           quill_foo: 'baz',
