@@ -12,7 +12,7 @@ var assert = require('assert'),
     config = require('../lib').config;
 
 vows.describe('quill-template/config').addBatch({
-  'When using `quill.composer.config`': {
+  'When using `config` module': {
     'the `getEnv()` method': {
       topic: function () {
         var that = this;
@@ -41,7 +41,7 @@ vows.describe('quill-template/config').addBatch({
               password: 'supersecretz'
             }
           }),
-          remotes: ['first', 'foo=baz'],
+          remotes: ['first', 'foo=baz', 'nested:merge=works', 'new:nested=works'],
           after: {
             bar: 'lol'
           }
@@ -60,7 +60,9 @@ vows.describe('quill-template/config').addBatch({
         var expected = {
           quill_foo: 'baz',
           quill_bar: 'lol',
-          quill_nested_boo: 'faz'
+          quill_nested_boo: 'faz',
+          quill_nested_merge: 'works',
+          quill_new_nested: 'works'
         };
 
         Object.keys(expected).forEach(function (key) {
