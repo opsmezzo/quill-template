@@ -126,6 +126,7 @@ vows.describe('quill-template/template').addBatch({
       ], this.callback);
     },
     "should properly stringify Objects": function (err, rendered) {
+      fs.writeFileSync(this.file, this.templ, 'utf8');
       assert.isNull(err);
 
       try { rendered = JSON.parse(rendered) }
@@ -133,7 +134,7 @@ vows.describe('quill-template/template').addBatch({
 
       assert.deepEqual(rendered.nested, config.nest);
       assert.equal(rendered.list, config.arrs.join(' ') + ' ');
-      fs.writeFileSync(this.file, this.templ, 'utf8');
+      assert.equal(rendered.missing, 'MISSING!');
     }
   }
 }).export(module);
