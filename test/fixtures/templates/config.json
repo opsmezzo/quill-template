@@ -1,0 +1,5 @@
+{
+  "nested": {{ nest }},
+  "list": "{{#arrs}}{{.}} {{/arrs}}",
+  "missing": "{{#missing}}{{.}}{{/missing}}{{^missing}}MISSING!{{/missing}}"
+}
