@@ -14,6 +14,7 @@
     "configuration"
   ],
   "dependencies": {
+    "mustache-ref": "0.8.x",
     "rget": "1.1.x",
     "utile": "0.1.x"
   },

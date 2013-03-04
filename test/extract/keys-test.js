@@ -96,6 +96,9 @@ vows.describe('quill-template/extract/keys').addBatch({
         assert.deepEqual(values, [
           'foo',
           'bar.0',
+          'nest',
+          '.',
+          '.',
           'baz.nested.x',
           'foo.bar',
           'foo.bar_baz',
