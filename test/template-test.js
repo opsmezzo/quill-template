@@ -80,7 +80,9 @@ vows.describe('quill-template/template').addBatch({
     ['{{foo}}{{bar}}', 'lvaluervalue'],
     ['{{ foo}}{{bar}}', 'lvaluervalue'],
     ['{{foo }}{{bar}}', 'lvaluervalue'],
-    ['{{foo }}{{ bar}}', 'lvaluervalue']
+    ['{{foo }}{{ bar}}', 'lvaluervalue'],
+    ['{{#missing}}{{.}}{{/missing}} {{foo}}', ' lvalue'],
+    ['{{^missing}}MISSING!{{/missing}} {{foo}}', 'MISSING! lvalue']
   ].reduce(function (tests, args) {
     tests[args[0]] = shouldRender.apply(null, args);
     return tests;
