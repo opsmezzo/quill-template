@@ -24,10 +24,9 @@ function shouldHaveKeys(text, expected) {
     var keys = extract.keys(text.join('\n'));
 
     assert.isTrue(!!keys.length);
-    keys.forEach(function (key, i) {
-      assert.isString(key.text);
-      assert.equal(key.key, expected[i].key);
-      assert.equal(key.line, expected[i].line);
+    expected.forEach(function (key) {
+      assert.include(keys, key);
+      assert.include(keys.fatal, key);
     });
   }
 }
@@ -48,16 +47,15 @@ vows.describe('quill-template/extract/keys').addBatch({
         '{{ foo }} = {{ bar }}'
       ],
       [
-        { line: 1, key: 'foo' },
-        { line: 2, key: 'bar.0' },
-        { line: 4, key: 'baz.nested.x' },
-        { line: 5, key: 'foo.bar' },
-        { line: 6, key: 'foo.bar_baz' },
-        { line: 7, key: 'foo.bar-baz' },
-        { line: 8, key: 'foo.{{ bar }}' },
-        { line: 9, key: '{{ bar }}' },
-        { line: 10, key: 'foo' },
-        { line: 10, key: 'bar' }
+        'bar',
+        'foo',
+        'bar.0',
+        'baz.nested.x',
+        'foo.bar',
+        'foo.bar_baz',
+        'foo.bar-baz',
+        'foo.{{ bar }}',
+        '{{ bar }}'
       ]
     ),
     "the file() method": {
@@ -67,10 +65,12 @@ vows.describe('quill-template/extract/keys').addBatch({
       "should extract the correct values": function (err, values) {
         assert.isNull(err);
         assert.isArray(values);
-        assert.deepEqual(values, [
-          { line: 1, text: 'foo: {{ foo }}', key: 'foo' },
-          { line: 2, text: 'bar: {{ bar.0 }}', key: 'bar.0' }
-        ]);
+        assert.lengthOf(values, 2);
+
+        ['foo', 'bar.0'].forEach(function (key) {
+          assert.include(values, key);
+          assert.include(values.fatal, key);
+        });
       }
     },
     "the dir() method": {
@@ -97,15 +97,15 @@ vows.describe('quill-template/extract/keys').addBatch({
           'foo',
           'bar.0',
           'nest',
-          '.',
-          '.',
+          'arrs',
+          'missing',
+          'bar',
           'baz.nested.x',
           'foo.bar',
           'foo.bar_baz',
           'foo.bar-baz',
           'foo.{{ bar }}',
-          '{{ bar }}',
-          'bar'
+          '{{ bar }}'
         ]);
       }
     }
