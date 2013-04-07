@@ -16,6 +16,18 @@ var fixturesDir = path.join(__dirname, '..', 'fixtures'),
     scriptsDir = path.join(fixturesDir, 'scripts');
 
 //
+// Test assertion for responses from extract.envvars()
+//
+function isValidKeys(actual) {
+  var types = Object.keys(actual);
+
+  assert.lengthOf(types, 4);
+  types.forEach(function (type) {
+    assert.isArray(actual[type]);
+  });
+}
+
+//
 // Test macro for asserting that the keys extracted from
 // the `text` match the `expected` values.
 //
@@ -23,12 +35,12 @@ function shouldHaveKeys(text, expected) {
   return function () {
     var keys = extract.envvars(text.join('\n'));
 
-    assert.isTrue(!!keys.length);
-    keys.forEach(function (key, i) {
-      assert.isString(key.text);
-      assert.equal(key.key, expected[i].key);
-      assert.equal(key.line, expected[i].line);
-      assert.equal(key.raw, expected[i].raw);
+    isValidKeys(keys);
+    assert.isTrue(!!keys.required.length);
+    assert.isTrue(!!keys.fatal.length);
+    expected.forEach(function (key) {
+      assert.include(keys.required, key);
+      assert.include(keys.fatal, key);
     });
   }
 }
@@ -46,13 +58,12 @@ vows.describe('quill-template/extract/envvars').addBatch({
         '$q_foo = $quill_bar'
       ],
       [
-        { line: 1, key: 'foo',          raw: 'q_foo' },
-        { line: 2, key: 'bar.0',        raw: 'quill_bar_0' },
-        { line: 4, key: 'baz.nested.x', raw: 'q_baz_nested_x' },
-        { line: 5, key: 'foo.bar',      raw: 'quill_foo_bar' },
-        { line: 6, key: 'foo.bar-baz',  raw: 'q_foo_bar-baz' },
-        { line: 7, key: 'foo',          raw: 'q_foo' },
-        { line: 7, key: 'bar',          raw: 'quill_bar' }
+        'foo',
+        'bar.0',
+        'baz.nested.x',
+        'foo.bar',
+        'foo.bar-baz',
+        'bar',
       ]
     ),
     "the file() method": {
@@ -61,12 +72,9 @@ vows.describe('quill-template/extract/envvars').addBatch({
       },
       "should extract the correct values": function (err, values) {
         assert.isNull(err);
-        assert.isArray(values);
-        assert.deepEqual(values, [
-          { line: 1, text: '$quill_foo', key: 'foo', raw: 'quill_foo' },
-          { line: 2, text: '$q_bar', key: 'bar', raw: 'q_bar' },
-          { line: 3, text: '$q_baz', key: 'baz', raw: 'q_baz' }
-        ]);
+        isValidKeys(values)
+        assert.deepEqual(values.required, ['foo', 'bar', 'baz']);
+        assert.deepEqual(values.fatal, ['foo', 'bar', 'baz']);
       }
     },
     "the dir() method": {
@@ -76,10 +84,10 @@ vows.describe('quill-template/extract/envvars').addBatch({
       "should extract the correct values": function (err, values) {
         assert.isNull(err);
         assert.isObject(values);
-        
+
         fs.readdirSync(scriptsDir).forEach(function (file) {
-          assert.isArray(values[file]);
-        });        
+          isValidKeys(values[file]);
+        });
       }
     },
     "the list() method": {
@@ -88,8 +96,9 @@ vows.describe('quill-template/extract/envvars').addBatch({
       },
       "should extract the correct values": function (err, values) {
         assert.isNull(err);
-        assert.isArray(values);
-        assert.deepEqual(values, [ 
+        isValidKeys(values);
+
+        var expected = [
           'foo',
           'bar',
           'baz',
@@ -97,7 +106,10 @@ vows.describe('quill-template/extract/envvars').addBatch({
           'http.host',
           'npm.username',
           'npm.password'
-        ]);
+        ];
+
+        assert.deepEqual(values.required, expected);
+        assert.deepEqual(values.fatal, expected);
       }
     }
   }
