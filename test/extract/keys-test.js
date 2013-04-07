@@ -43,6 +43,36 @@ function shouldHaveKeys(text, expected) {
   }
 }
 
+//
+// Test assertion that ensures all keys are listed
+// in `/test/fixtures/templates/*`
+//
+function assertListedKeys(err, values) {
+  assert.isNull(err);
+  isValidKeys(values);
+
+  var expected = {
+    optional: ['arrs', 'missing'],
+    required: [
+      'foo',
+      'bar.0',
+      'nest',
+      'bar',
+      'baz.nested.x',
+      'foo.bar',
+      'foo.bar_baz',
+      'foo.bar-baz',
+      'foo.{{ bar }}',
+      '{{ bar }}'
+    ]
+  };
+
+  assert.deepEqual(values.required, expected.required);
+  assert.deepEqual(values.fatal, expected.required);
+  assert.deepEqual(values.optional, expected.optional);
+  assert.deepEqual(values.warn, expected.optional);
+}
+
 vows.describe('quill-template/extract/keys').addBatch({
   "When using `require('quill-template').extract`": {
     "the keys() method": shouldHaveKeys(
@@ -98,33 +128,19 @@ vows.describe('quill-template/extract/keys').addBatch({
       }
     },
     "the list() method": {
-      topic: function () {
-        extract.keys.list(templatesDir, this.callback);
+      "with a directory": {
+        topic: function () {
+          extract.keys.list(templatesDir, this.callback);
+        },
+        "should extract the correct values": assertListedKeys
       },
-      "should extract the correct values": function (err, values) {
-        assert.isNull(err);
-        isValidKeys(values);
-
-        var expected = {
-          optional: ['arrs', 'missing'],
-          required: [
-            'foo',
-            'bar.0',
-            'nest',
-            'bar',
-            'baz.nested.x',
-            'foo.bar',
-            'foo.bar_baz',
-            'foo.bar-baz',
-            'foo.{{ bar }}',
-            '{{ bar }}'
-          ]
-        };
-
-        assert.deepEqual(values.required, expected.required);
-        assert.deepEqual(values.fatal, expected.required);
-        assert.deepEqual(values.optional, expected.optional);
-        assert.deepEqual(values.warn, expected.optional);
+      "with a list of files": {
+        topic: function () {
+          extract.keys.list(fs.readdirSync(templatesDir).map(function (file) {
+            return path.join(templatesDir, file);
+          }), this.callback);
+        },
+        "should extract the correct values": assertListedKeys
       }
     }
   }
