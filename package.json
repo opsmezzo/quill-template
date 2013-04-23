@@ -19,7 +19,7 @@
     "utile": "0.1.x"
   },
   "devDependencies": {
-    "conservatory-api": "1.0.x",
+    "composer-api": "1.0.x",
     "nock": "0.17.x",
     "vows": "0.7.x"
   },

@@ -8,7 +8,7 @@
 var assert = require('assert'),
     nock = require('nock'),
     vows = require('vows'),
-    conservatory = require('conservatory-api'),
+    composer = require('composer-api'),
     config = require('../lib').config;
 
 vows.describe('quill-template/config').addBatch({
@@ -33,7 +33,7 @@ vows.describe('quill-template/config').addBatch({
           });
         
         config.getEnv({
-          client: conservatory.createClient('composer', {
+          client: composer.createClient({
             host: 'api.testquill.com',
             port: 80,
             auth: {
