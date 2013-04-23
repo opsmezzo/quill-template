@@ -67,10 +67,15 @@ function assertListedKeys(err, values) {
     ]
   };
 
-  assert.deepEqual(values.required, expected.required);
-  assert.deepEqual(values.fatal, expected.required);
-  assert.deepEqual(values.optional, expected.optional);
-  assert.deepEqual(values.warn, expected.optional);
+  expected.required.forEach(function (key) {
+    assert.include(values.required, key);
+    assert.include(values.fatal, key);
+  });
+  
+  expected.optional.forEach(function (key) {
+    assert.include(values.optional, key);
+    assert.include(values.warn, key);    
+  });
 }
 
 vows.describe('quill-template/extract/keys').addBatch({

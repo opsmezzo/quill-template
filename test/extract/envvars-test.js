@@ -98,18 +98,17 @@ vows.describe('quill-template/extract/envvars').addBatch({
         assert.isNull(err);
         isValidKeys(values);
 
-        var expected = [
-          'foo',
-          'bar',
-          'baz',
-          'http.port',
-          'http.host',
-          'npm.username',
-          'npm.password'
-        ];
-
-        assert.deepEqual(values.required, expected);
-        assert.deepEqual(values.fatal, expected);
+        ['foo',
+         'bar',
+         'baz',
+         'http.port',
+         'http.host',
+         'npm.username',
+         'npm.password'
+        ].forEach(function (key) {
+          assert.include(values.required, key);
+          assert.include(values.fatal, key);
+        });
       }
     }
   }
