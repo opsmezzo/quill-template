@@ -1,7 +1,7 @@
 {
   "name": "quill-template",
   "description": "Reusable templating and environment logic for applying configuration to system.json packages.",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "author": "Nodejitsu Inc. <info@nodejitsu.com>",
   "repository": {
     "type": "git",
